@@ -23,20 +23,32 @@ const sockets = [];
 // ws소캣이 열릴때마다 작동 (브라우저와 연결될때마다)
 wss.on("connection", (socket) => {
     sockets.push(socket);
+    socket["nickname"] = "Anonimous";
 
     console.log("Connected to Browser");
     // 만약 브라우저가 꺼지면 알림받는다
     socket.on("close", () => console.log("Disconnected from the Browser"))
-    // 브라우저를 통해 받은 메세지
-    socket.on("message", (message) => {
-        message = message.toString("utf-8")
 
-        sockets.forEach(aSocket => {
-            aSocket.send(message);
-        });
+    // 브라우저를 통해 받은 메세지
+    let name = "";
+    socket.on("message", (msg) => {
+        msg = msg.toString("utf-8")
+
+        const message = JSON.parse(msg);
+
+        switch(message.type) {
+            case "new_message":
+                sockets.forEach(aSocket => {
+                    aSocket.send(`${socket.nickname} : ${message.payload}`);
+                });
+            case "nickname":
+                // 각 소캣에 정보를 담을 수 있다. (key: value)
+                socket["nickname"] = message.payload;
+        }
       
         console.log(message);
     })
+
     // 브라우저로 메세지를 보낸다
     socket.send("hello!!");
 });
