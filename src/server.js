@@ -1,6 +1,7 @@
 import http from "http";
-import WebSocket from "ws";
+// import WebSocket from "ws";
 import express from "express";
+import SocketIO from "socket.io";
 
 const app = express();
 app.set("view engine", "pug");
@@ -15,11 +16,12 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 
 const server = http.createServer(app);
 // http 와 ws 프로토콜을 동시에 여는 작업
-const wss = new WebSocket.Server({ server });
+// const wss = new WebSocket.Server({ server });
 
 // 참가자들을 넣어둘 배열
 const sockets = [];
 
+/*
 // ws소캣이 열릴때마다 작동 (브라우저와 연결될때마다)
 wss.on("connection", (socket) => {
     sockets.push(socket);
@@ -52,6 +54,20 @@ wss.on("connection", (socket) => {
     // 브라우저로 메세지를 보낸다
     socket.send("hello!!");
 });
+*/
+// socket.io 열기
+const io = SocketIO(server);
+
+io.on("connection", socket => {
+    socket.onAny((event) => {
+        console.log(`Socket Event: ${event}`);
+    })
+
+    socket.on("enter_room", (roomName, done) => { // 보낸 인자에 맞게 param 맞추기
+        socket.join(roomName);
+        done();
+    })
+})
 
 
 server.listen(3000, handleListen);

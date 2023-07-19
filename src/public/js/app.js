@@ -1,51 +1,29 @@
-const messageList = document.querySelector('ul');
-const messageForm = document.querySelector('#message');
-const nickForm = document.querySelector('#nick');
+const socket = io();
 
-// 브라우저에는 기본적으로 websocket이 제공된다.
-const socket = new WebSocket(`ws://${window.location.host}`);
+const welcome = document.getElementById("welcome");
+const form = welcome.querySelector("form");
+const room = document.getElementById("room");
 
-function makeMessage(type, payload) {
-    const msg = {type, payload};
-    return JSON.stringify(msg);
+room.hidden = true;
+let roomName;
+
+function showRoom() {
+    welcome.hidden = true;
+    room.hidden = false;
+    const h3 = room.querySelector("h3");
 }
 
-// 서버와 연결 되었을때
-socket.addEventListener("open", () => {
-    console.log("Connected to Server");
-});
-
-// 서버로부터 메세지를 받을떄
-socket.addEventListener("message", (message) => {
-    console.log("New Message: ", message.data);
-    const li = document.createElement("li");
-    li.innerText = message.data;
-    messageList.append(li);
-});
-
-// 서버가 연결이 끊어졌을때
-socket.addEventListener("close", () => {
-    console.log("Disconnected from Server");
-});
-
-// 서버에게 메세지를 보낸다
-// setTimeout(() => {
-//     socket.send("hello from the browser!");
-// }, 10000);
-
-function handleNickSubmit(event) {
+function handleRoomSubmit(event) {
     event.preventDefault();
-    const input = nickForm.querySelector("input");
-    socket.send(makeMessage("nickname", input.value));
-}
+    const input = form.querySelector("input");
 
-
-function handleSubmit(event) {
-    event.preventDefault();
-    const input = messageForm.querySelector("input");
-    socket.send(makeMessage("new_message", input.value));
+    // 메세지를 보내거나 이벤트를 넘겨준다. 꼭 메세지를 넘겨줄 필요 없이
+    // 첫번째 인자: 메세지 또는 이벤트 이름
+    // 두번째 인자 ~ 다양한 인자를 통해 여러가지를 보낼 수 있음 (data, 함수, ....)
+    // 만약 끝날때 실행되는 function을 보내려면 마지막 인자에 넣기
+    socket.emit("enter_room", input.value, showRoom);
+    roomName = input.value;
+    h3.innterText = `Room ${roomName}`
     input.value = "";
 }
-
-nickForm.addEventListener("submit", handleNickSubmit);
-messageForm.addEventListener("submit", handleSubmit)
+form.addEventListener("submit", handleRoomSubmit);

@@ -31,3 +31,17 @@ wss.on을 통해 브라우저가 연결될때마다 작동 시킨다.
 연결이 끊길때
 
 ```
+
+### socket IO
+```
+# 역할
+framework로 실시간, 양방향, event 기반의 통신을 가능하게 함 (websocket을 이용)
+
+SocketIO는 websocket의 부가기능이 아니다. websocket을 사용하는것. 만약 websocket이 지원이 안되면 다른것을 사용한다.
+
+# 설치 
+npm install socket.io
+
+# socket.io 열기
+const io = SocketIO(server);
+```
