@@ -54,3 +54,46 @@ const io = SocketIO(server);
 ```
 npm i @socket.io/admin-ui
 ```
+
+
+### 비디오 연동
+
+```
+https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+
+// 유저의 카메라와 오디오를 가져옴
+navigator.mediaDevices.getUserMedia();
+
+1. 비디오 켜기
+    try {
+        myStream = await navigator.mediaDevices.getUserMedia(
+            {
+                audio: true,
+                video: true,
+            }
+        );
+        myFace.srcObject = myStream;
+        console.log(myStream);
+    } 
+    catch(e) {
+        console.log(e);
+    }
+
+2. 마이크 온 오프
+    myStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+
+3. 카메라 온 오프
+    myStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+
+4. 카메라 후면 전면 전환
+    getUserMedia(constraints) 제약 조건을 지정
+    {
+        audio: true,
+        // 셀피 모드
+        video: { facingMode: "user" },
+    }        
+
+// 모든 장치와 미디어 장치를 가져옴 (컴퓨터와 모바일이 가지고 있는 모든 장치 정보)
+await navigator.mediaDevices.enumerateDevices();
+
+```
