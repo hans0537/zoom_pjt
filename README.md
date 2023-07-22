@@ -97,3 +97,45 @@ navigator.mediaDevices.getUserMedia();
 await navigator.mediaDevices.enumerateDevices();
 
 ```
+
+### WebRTC
+
+<img src="./p2p.png">
+
+```
+# peer-to-peer는 서버를 통하지 않고 직접 전달됨. 따라서 속도가 빠름
+
+signaling을 통해 서로의 위치, settings, configuration 등을 알려준뒤 peer-to-peer통신이 가능해짐
+```
+
+### 모바일 환경
+
+```
+# local tunnel 설치
+$ npm i localtunnel
+$ npx lt --port 3000
+
+# STUN server
+- 컴퓨터가 공용 IP주소를 찾게 해준다.
+- 어떤것을 request하면 인터넷에서 내가 누군지 알려주는 서버
+
+GOOGLE에서 제공해주는 stun server
+    iceServers: [
+        {
+            urls: [
+                "stun:stun.l.google.com:19302",
+                "stun:stun1.l.google.com:19302",
+                "stun:stun2.l.google.com:19302",
+                "stun:stun3.l.google.com:19302",
+                "stun:stun4.l.google.com:19302",
+            ],
+        }
+    ]
+
+만약 WebRTC를 활용하여 무언갈 만들려면 직접 STUN server를 구축해야 나의 공용주소를 제공할 수 있다.
+```
+
+### Data Channel
+```
+- 이미지, 파일, 텍스트, 게임 업데이트 패킷 갓틍ㄴ 것들을 서로 주고 받을 수 있다.
+```
